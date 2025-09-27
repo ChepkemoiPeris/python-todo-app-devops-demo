@@ -91,14 +91,17 @@ Make sure you have a .env file in the root of the project before running this st
 1. From the project’s root directory run:
     ```bash
     docker compose up --build
+    ```
 The --build flag ensures the image is rebuilt if you made code or dependency changes.
 2. To stop and remove all containers run:
     ```bash
     docker compose down
+    ```
 This will remove the containers but keep your database volume (mysqldata).
 To also remove volumes/data, use:
     ```bash
     docker compose down -v
+    ```
 
 3. Access the application:
     Open your browser at http://localhost:5000
