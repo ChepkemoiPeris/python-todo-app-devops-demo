@@ -3,20 +3,20 @@
 A Flask web application with MySQL backend for devops end to end implementation.
 ## Prerequisites
 - Python 3.8+
-- MySQL Server
-- Docker - If you want to containerize it
+- MySQL Server 
 
 ## Setup without docker
 First clone the repository:
-    ```bash
-    git clone https://github.com/ChepkemoiPeris/python-todo-app-devops-demo.git
-    cd python-todo-app-devops-demo
+```bash
+git clone https://github.com/ChepkemoiPeris/python-todo-app-devops-demo.git
+cd python-todo-app-devops-demo
+```
     
 1. Create and activate a virtual environment:
    ```bash
    python3 -m venv venv
    source venv/bin/activate
-
+    
 2. Install dependencies:
     ```bash
     pip install -r requirements.txt
@@ -26,7 +26,7 @@ First clone the repository:
     MYSQL_PORT=3306
     MYSQL_USER=user
     MYSQL_PASSWORD=1234
-    MYSQL_DB=todo_db 
+    MYSQL_DATABASE=todo_db 
 
 
 4. Run the app:
@@ -34,6 +34,8 @@ First clone the repository:
     python app.py
 
 ## Run with docker
+### Prerequisites
+- docker
 1. Build the Docker image:
  It’s recommended to tag your image with the format: `<dockerhub-username>/<app-name>:<version>`
  For example: 
@@ -64,7 +66,7 @@ If you’re only running locally, you can simply use a name like todoapp:v1.
     MYSQL_HOST=todo-mysql
     MYSQL_USER=todo_user
     MYSQL_PASSWORD=todo_pass
-    MYSQL_DB=todo_db
+    MYSQL_DATABASE=todo_db
     ```
 
 5. Run the flask-todo container on the same network as mysql container:
@@ -84,3 +86,28 @@ Make sure you have a .env file in the root of the project before running this st
 - The MySQL container will automatically create the database and user on first run.
 
 - Data will be lost if the MySQL container is removed. To persist data,you can add a volume
+
+## Run with docker compose
+1. From the project’s root directory run:
+    ```bash
+    docker compose up --build
+The --build flag ensures the image is rebuilt if you made code or dependency changes.
+2. To stop and remove all containers run:
+    ```bash
+    docker compose down
+This will remove the containers but keep your database volume (mysqldata).
+To also remove volumes/data, use:
+    ```bash
+    docker compose down -v
+
+3. Access the application:
+    Open your browser at http://localhost:5000
+
+4. Check logs (optional)
+    ```bash
+    docker compose logs -f
+
+5. Run in the background (optional)
+  Start services in detached mode:
+  ```bash
+  docker compose up -d
