@@ -7,6 +7,11 @@ A Flask web application with MySQL backend for devops end to end implementation.
 - Docker - If you want to containerize it
 
 ## Setup without docker
+First clone the repository:
+    ```bash
+    git clone https://github.com/ChepkemoiPeris/python-todo-app-devops-demo.git
+    cd python-todo-app-devops-demo
+    ```
 1. Create and activate a virtual environment:
    ```bash
    python3 -m venv myenv
@@ -30,7 +35,7 @@ A Flask web application with MySQL backend for devops end to end implementation.
 
 ## Run with docker
 1. Build the Docker image:
- It’s recommended to tag your image with the format: <dockerhub-username>/<app-name>:<version>
+ It’s recommended to tag your image with the format: `<dockerhub-username>/<app-name>:<version>`
  For example: 
     ```bash
     docker build -t username/todoapp:v1 .
