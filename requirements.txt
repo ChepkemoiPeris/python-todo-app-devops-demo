@@ -1,4 +1,3 @@
-Flask
-Flask-MySQL
+flask
 mysql-connector-python
 python-dotenv
