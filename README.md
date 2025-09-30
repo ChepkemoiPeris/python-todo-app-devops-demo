@@ -9,7 +9,7 @@ A Flask web application with MySQL backend for devops end to end implementation.
 First clone the repository:
 ```bash
 git clone https://github.com/ChepkemoiPeris/python-todo-app-devops-demo.git
-cd python-todo-app-devops-demo
+cd python-todo-app-devops-demo/app
 ```
     
 1. Create and activate a virtual environment:
@@ -98,13 +98,13 @@ Make sure you have a .env file in the root of the project before running this st
     ```bash
     docker compose down
     ```
-    
+
     This will remove the containers but keep your database volume (mysqldata).
     To also remove volumes/data, use:
         ```bash
         docker compose down -v
         ```
-
+        
 3. Access the application:
     Open your browser at http://localhost:5000
 
