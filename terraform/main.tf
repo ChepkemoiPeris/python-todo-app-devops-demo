@@ -21,10 +21,9 @@ module "security_groups" {
 module "eks" {
   source = "./modules/eks"
  
-  #vpc_id              = module.vpc.vpc_id
-  #worker_sg_id        = module.security_groups.eks_nodes_sg_id
-  #private_subnet_ids  = module.vpc.private_subnets
-  #public_subnet_ids   = module.vpc.public_subnets
+  vpc_id              = module.vpc.vpc_id
+  eks_nodes_sg_id     = [module.security_groups.eks_nodes_sg_id]
+  private_subnet_ids  = module.vpc.private_subnets 
 }
 
 # Call the RDS Module
