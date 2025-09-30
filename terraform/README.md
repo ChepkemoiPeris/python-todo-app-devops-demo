@@ -12,6 +12,7 @@
 - Terraform: Make sure Terraform is installed on your local machine.
  
 ## Folder Structure
+```bash
 terraform/
 ├── backend.tf
 ├── main.tf
@@ -32,4 +33,10 @@ terraform/
 ├── provider.tf
 ├── README.md
 └── variables.tf
-
+```
+## Run terraform
+1. Connect to AWS
+    ```bash
+    aws configure
+    ```
+2. 
