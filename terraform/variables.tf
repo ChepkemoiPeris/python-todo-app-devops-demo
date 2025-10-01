@@ -44,3 +44,7 @@ variable "vpc_database_subnets" {
   type = list(string)
   default = ["10.0.151.0/24", "10.0.152.0/24"]
 }
+variable "db_password" {
+  type      = string
+  sensitive = true
+}

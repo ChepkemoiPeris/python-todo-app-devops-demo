@@ -30,4 +30,12 @@ output "nat_public_ips" {
   value       = module.vpc.nat_public_ips
 }
 
- 
+ output "database_subnets" {
+  description = "The database subnet IDs for RDS"
+  value       = module.vpc.database_subnets
+}
+
+output "database_subnet_group_name" {
+  description = "The database subnet IDs for RDS"
+  value       = module.vpc.database_subnet_group_name
+}
