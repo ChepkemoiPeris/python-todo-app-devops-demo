@@ -102,8 +102,7 @@ Make sure you have a .env file in the root of the project before running this st
     This will remove the containers but keep your database volume (mysqldata).
     To also remove volumes/data, use:
         ```bash
-        docker compose down -v
-        ```
+        docker compose down -v  
         
 3. Access the application:
     Open your browser at http://localhost:5000
