@@ -52,22 +52,25 @@ terraform/
   This downloads required providers and configures the backend (S3).
   ```bash
   terraform init
-
+  ```
 
 3. Validate configuration(Optional)
    Check syntax and confirm if there are errors on the configuration
     ```bash
-    terraform init
+    terraform validate
+    ```
 
 4. Preview changes
    This outputs what infrastructure be created, modified or destroyed
    ```bash
    terraform plan
+   ```
 
 5. Apply changes
    To deploy infrastructure(modify/create) run:
    ```bash
-   terraform apply 
+   terraform apply
+   ```
 
 6. Destroy resources
    To cleanup/remove resources after you are done run:
