@@ -5,17 +5,31 @@ module "eks" {
   name    = var.eks_cluster_name
   kubernetes_version = "1.33"
 
+  addons = {
+    coredns                = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    kube-proxy             = {}
+    vpc-cni                = {
+      before_compute = true
+    }
+  }
+
   endpoint_public_access = true
   enable_cluster_creator_admin_permissions = true
+  create_cni_ipv6_iam_policy = true  
+  create_iam_role = true
+  enable_irsa = true
+
 
   eks_managed_node_groups = {
-    example = {
+    eks_node_instance = {
       instance_types = var.node_instance_types
       min_size       = 1
-      max_size       = 2
-      desired_size   = 2
-
-      additional_security_group_ids = var.eks_nodes_sg_id
+      max_size       = 1
+      desired_size   = 1
+ 
     }
 
     

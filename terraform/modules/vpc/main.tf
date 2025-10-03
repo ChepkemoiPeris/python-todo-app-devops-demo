@@ -10,7 +10,7 @@ module "vpc" {
   cidr = var.vpc_cidr_block 
   public_subnets  = var.vpc_public_subnets
   private_subnets = var.vpc_private_subnets  
-  azs             = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs             = ["us-east-1a", "us-east-1b"]
   
   # Database Subnets
   database_subnets = var.vpc_database_subnets
@@ -30,12 +30,12 @@ module "vpc" {
   public_subnet_tags = {
     Type = "Public Subnets"
     "kubernetes.io/role/elb" = 1    
-    "kubernetes.io/cluster/${var.vpc_name}" = "shared"        
+    "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"        
   }
   private_subnet_tags = {
     Type = "private-subnets"
     "kubernetes.io/role/internal-elb" = 1    
-    "kubernetes.io/cluster/${var.vpc_name}" = "shared"    
+    "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"    
   }
 
   database_subnet_tags = {

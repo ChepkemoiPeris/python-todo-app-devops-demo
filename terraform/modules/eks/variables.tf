@@ -10,11 +10,7 @@ variable "vpc_id" {
   description = "VPC ID where the EKS cluster will be provisioned"
   type        = string
 }
-
-variable "eks_nodes_sg_id" {
-  description = "Security group id"
-  type        = list(string)
-}
+ 
 variable "private_subnet_ids" {
   description = "List of private subnet IDs for worker nodes"
   type        = list(string)

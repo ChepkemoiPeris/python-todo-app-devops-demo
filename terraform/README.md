@@ -9,10 +9,10 @@
 - AWS CLI: Install and configure the AWS CLI.
 - Terraform: Make sure Terraform is installed on your local machine.
 - Database Password (Environment Variable) - Export database credentials before running Terraform 
-  so they’re injected securely
+  so they’re injected securely or enter password during runtime for terraform plan
   ```bash
   export TF_VAR_db_password="yourdbpassword"
-
+  ```
  
 ## Folder Structure
 ```bash
@@ -65,7 +65,6 @@ terraform/
    ```bash
    terraform plan
    ```
-
 5. Apply changes
    To deploy infrastructure(modify/create) run:
    ```bash
@@ -77,3 +76,16 @@ terraform/
    ```bash
    terraform destroy
 
+## Notes
+
+- Remote state is stored in S3 (peris-tf-flask-app-bucket) with locking enabled and versioning enabled.
+
+- VPC, Security Groups, EKS cluster, and RDS are modularized for clarity and reusability. 
+
+** Improvements: **
+
+- Use aws secrets manager to store secrets.
+
+- Add separate workspaces for dev/staging/prod.
+
+- Automate deployments via GitHub Actions CI/CD pipeline.

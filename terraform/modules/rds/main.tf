@@ -4,8 +4,8 @@ module "rds" {
 
   identifier        = "flask-todo-app"
   engine            = "mysql"
-  engine_version    = "8.0.35"
-  major_engine_version = "8.0.35"
+  engine_version    = "8.0"
+  major_engine_version = "8.0"
   family = "mysql8.0"
   instance_class    = var.db_instance_type 
   allocated_storage = 5

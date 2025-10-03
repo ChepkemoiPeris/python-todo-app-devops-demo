@@ -4,3 +4,4 @@ env/
 venv/
 .terraform
 .terraform.lock.hcl
+outputs.json
