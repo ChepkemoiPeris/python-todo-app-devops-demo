@@ -6,7 +6,7 @@ module "vpc" {
   vpc_tags = var.vpc_tags
   vpc_public_subnets  = var.vpc_public_subnets
   vpc_private_subnets = var.vpc_private_subnets
-  vpc_database_subnets = var.vpc_database_subnets
+  vpc_database_subnets = var.vpc_database_subnets 
 }
 
 module "security_groups" {
@@ -21,8 +21,7 @@ module "security_groups" {
 module "eks" {
   source = "./modules/eks"
  
-  vpc_id              = module.vpc.vpc_id
-  eks_nodes_sg_id     = [module.security_groups.eks_nodes_sg_id]
+  vpc_id              = module.vpc.vpc_id 
   private_subnet_ids  = module.vpc.private_subnets 
 }
 
@@ -35,4 +34,12 @@ module "rds" {
   db_subnet_group_name = module.vpc.database_subnet_group_name
   db_password = var.db_password
 }
- 
+
+module "alb_controller" {
+  source = "./modules/alb_controller"
+  
+  vpc_id              = module.vpc.vpc_id 
+  oidc_provider_arn = module.eks.oidc_provider_arn
+
+  depends_on = [module.eks]
+}

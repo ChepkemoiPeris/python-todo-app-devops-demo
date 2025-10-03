@@ -4,6 +4,7 @@ WORKDIR /app
 #copy files
 COPY . /app
 #install dependencies
+RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
 #expose port
 EXPOSE 5000

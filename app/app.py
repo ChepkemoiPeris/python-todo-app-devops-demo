@@ -18,20 +18,23 @@ def get_db_connection():
             database=os.getenv("MYSQL_DATABASE")
         ) 
         return conn
-    except Exception: 
+    except Exception as e: 
+        print("DB connection error:", e)
         return None
-    
-db = get_db_connection() 
-# Create the database table if it does not exist
-if db:
-    cursor = db.cursor()
-    cursor.execute(
-        "CREATE TABLE IF NOT EXISTS tasks (id INT AUTO_INCREMENT PRIMARY KEY, task VARCHAR(255), status BOOLEAN)"
-    )
-    db.commit()
-    cursor.close()
-    db.close()
-
+     
+def init_db():
+    conn = get_db_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "CREATE TABLE IF NOT EXISTS tasks (id INT AUTO_INCREMENT PRIMARY KEY, task VARCHAR(255), status BOOLEAN)"
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("DB initialized and tasks table ensured")
+    else:
+        print("Could not initialize DB, connection failed")
  
 @app.route('/')
 def index():
@@ -87,4 +90,5 @@ def healthz():
 
     return jsonify({"status": "ok", "db": db_status})
 if __name__ == '__main__':
+ init_db()
  app.run(host="0.0.0.0",port=5000)
