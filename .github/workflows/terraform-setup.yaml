@@ -54,15 +54,15 @@ jobs:
       - name: Get RDS endpoint from Terraform
         id: tf_output
         run: |
-          ENDPOINT=$(terraform -chdir=terraform output -raw rds_endpoint)
-          echo "rds_endpoint=$ENDPOINT" >> $GITHUB_OUTPUT
+          ENDPOINT=$(terraform -chdir=terraform output -raw rds_host)
+          echo "rds_host=$ENDPOINT" >> $GITHUB_OUTPUT
           echo "RDS Endpoint: $ENDPOINT"
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
 
       - name: Update ConfigMap with RDS endpoint
         run: |
-          sed -i "s|db_host:.*|db_host: ${{ steps.tf_output.outputs.rds_endpoint }}|g" k8s/configmap.yaml
+          sed -i "s|db_host:.*|db_host: ${{ steps.tf_output.outputs.rds_host }}|g" k8s/configmap.yaml
           cat k8s/configmap.yaml   
 
       - name: Commit and push updated ConfigMap
