@@ -10,6 +10,7 @@ module "rds" {
   instance_class    = var.db_instance_type 
   allocated_storage = 5
   db_subnet_group_name= var.db_subnet_group_name 
+  manage_master_user_password = false
 
   db_name  = var.db_name
   username = var.db_username
