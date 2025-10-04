@@ -41,6 +41,8 @@ jobs:
 
       - name: Terraform Plan
         run: terraform -chdir=terraform plan  
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
 
       - name: Apply Terraform configuration
         run: terraform -chdir=terraform apply -auto-approve  
