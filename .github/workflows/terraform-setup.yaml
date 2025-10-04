@@ -48,3 +48,24 @@ jobs:
         run: terraform -chdir=terraform apply -auto-approve  
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      
+      - name: Get RDS endpoint from Terraform
+        id: tf_output
+        run: |
+          ENDPOINT=$(terraform -chdir=terraform output -raw rds_endpoint)
+          echo "rds_endpoint=$ENDPOINT" >> $GITHUB_OUTPUT
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      - name: Update ConfigMap with RDS endpoint
+        run: |
+          sed -i "s/DB_HOST_PLACEHOLDER/${{ steps.tf_output.outputs.rds_endpoint }}/" k8s/configmap.yaml
+      - name: Commit updated configmap
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add k8s/configmap.yaml
+          git commit -m "Update db_host in ConfigMap"
+          git push
+
+
+
