@@ -59,5 +59,5 @@ output "rds_port" {
 }
 output "rds_host" {
   description = "RDS hostname without port"
-  value       = module.rds.db_instance_address
+  value       = module.rds.rds_host
 }
