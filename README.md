@@ -118,42 +118,35 @@ Make sure you have a .env file in the root of the project before running this st
   docker compose up -d
   ```
 ## Terraform and Kubernetes
-    This project uses Terraform to provision cloud infrastructure (VPC,EKS,RDS) and Kubernetes manifests to deploy the application. Please refer to the following folders for detailed instructions:
+This project uses Terraform to provision cloud infrastructure (VPC,EKS,RDS) and Kubernetes manifests to deploy the application. Please refer to the following folders for detailed instructions:
 
-    - `/terraform` → Contains Terraform modules and instructions to create VPC, EKS, RDS, and IAM   resources. See /terraform/README.md for setup details.
+- `/terraform` → Contains Terraform modules and instructions to create VPC, EKS, RDS, and IAM   resources. See /terraform/README.md for setup details.
 
-    - `/k8s` → Contains Kubernetes manifests (Deployment, Service, Ingress, ConfigMap, Secrets) to deploy the app on EKS. See /k8s/README.md for setup details.
+- `/k8s` → Contains Kubernetes manifests (Deployment, Service, Ingress, ConfigMap, Secrets) to deploy the app on EKS. See /k8s/README.md for setup details.
 
 ## CI/CD Pipeline (GitHub Actions)
-    We have a GitHub Actions workflow to automate builds, image pushes to Docker Hub, and deployments to EKS.
+We have a GitHub Actions workflow to automate builds, image pushes to Docker Hub, and deployments to EKS.
+
+![CI/CD Pipeline to Deploy to EKS](./pipelinediagram.png)
+
 
 **Workflow Overview**
  
-   - Triggered on push to main.
+| Stage                             | Description                                                                                                                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Checkout code**              | Pulls the latest version of the repository from GitHub so the workflow can access all files.                                                            |
+| **2. Configure AWS credentials**  | Authenticates with AWS using secrets stored in GitHub (Access Key and Secret Key). This allows subsequent steps to interact with EKS.                   |
+| **3. Set up kubectl**             | Installs the Kubernetes CLI (`kubectl`) so GitHub Actions can manage the EKS cluster.                                                                   |
+| **4. Authenticate to cluster**    | Connects `kubectl` to the target EKS cluster using the AWS CLI and cluster name.                                                                        |
+| **5. Check what changed**         | Detects if changes occurred in the `app/` or `k8s/` directories. This ensures only relevant stages are executed. |
+| **6. Build & Push Docker Image**  | If the `app/` folder changed, a new Docker image of the Flask app is built and pushed to Docker Hub with the current commit SHA as its tag.             |
+| **7. Check if deployment exists** | Verifies if the Kubernetes deployment (`todo-app-deployment`) already exists in the cluster.                                                            |
+| **8. Apply Kubernetes manifests** | If the `k8s/` folder changed or the deployment doesn’t exist, all manifest files are applied to create/update Kubernetes resources.                     |
+| **9. Update Deployment image**    | If only `app/` changed (not manifests), the pipeline updates the running deployment’s container image to the new version.                               |
 
-   - Detects changes in:
-        - app/** → rebuild Docker image and update deployment.
-
-        - k8s/** → reapply Kubernetes manifests.
-
-   - Steps:
-
-    1. Checkout repository.
-
-    2. Set up kubectl.
-
-    3. Authenticate to EKS cluster.
-
-    4. Detect changes in app and k8s folders.
-
-    5. Build and push Docker image to Docker Hub (using commit SHA as tag).
-
-    6. Apply Kubernetes manifests if k8s/** changed or deployment doesn’t exist.
-
-    7. Update deployment image if only app/** changed.
 
 **Important Notes**
-    For GitHub Actions, all secrets are stored in the repository settings, under Settings → Secrets → Actions.  
+For GitHub Actions, all secrets are stored in the repository settings, under Settings → Secrets → Actions.  
 
     To add secrets:
 
