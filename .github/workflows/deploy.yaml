@@ -24,7 +24,7 @@ jobs:
 
       - name: Authenticate to cluster
         run: |
-          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER }}
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
         
       - name: Check what changed
         id: changes

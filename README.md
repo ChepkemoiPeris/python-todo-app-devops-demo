@@ -178,4 +178,4 @@ Make sure you have a .env file in the root of the project before running this st
     | `AWS_ACCESS_KEY_ID`     | AWS IAM user access key with permissions to manage EKS, RDS, and related resources |
     | `AWS_SECRET_ACCESS_KEY` | AWS IAM user secret key                                                            |
     | `AWS_REGION`            | AWS region where your EKS cluster is deployed                                      |
-    | `EKS_CLUSTER`           | Name of your EKS cluster                                                           |
+    | `EKS_CLUSTER_NAME`           | Name of your EKS cluster                                                           |
