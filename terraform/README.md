@@ -89,3 +89,21 @@ terraform/
 - Add separate workspaces for dev/staging/prod.
 
 - Automate deployments via GitHub Actions CI/CD pipeline.
+
+## GitHub Actions for Terraform
+
+This project includes a GitHub Actions workflow to automate provisioning of AWS infrastructure (VPC, EKS, RDS).
+
+### Required Secrets
+
+To enable the workflow, add the following repository secrets under Settings → Secrets → Actions:
+
+| Secret Name             | Purpose                                                       |
+|-------------------------|---------------------------------------------------------------|
+| `AWS_ACCESS_KEY_ID`     | AWS IAM user access key with permissions for Terraform       |
+| `AWS_SECRET_ACCESS_KEY` | AWS IAM user secret key                                       |
+| `AWS_REGION`            | AWS region where resources will be created                   |
+| `EKS_CLUSTER_NAME`      | Name of the EKS cluster to create/manage                     |
+| `DB_PASSWORD`           | DB password for rds                                          |
+
+Once these are set, pushing changes to the `terraform/` folder (excluding README.md) will automatically trigger the workflow.

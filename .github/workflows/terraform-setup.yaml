@@ -1,0 +1,57 @@
+name: Set up infrastructure with Terraform
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'terraform/**'
+      - '!terraform/README.md'    
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
+
+jobs:
+  LogInToAWS:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+  TerraformInit:
+    runs-on: ubuntu-latest
+    needs: LogInToAWS
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize Terraform
+        run: terraform init terraform/
+
+  TerraformPlan:
+    runs-on: ubuntu-latest
+    needs: TerraformInit
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Terraform Plan
+        run: terraform plan terraform/
+
+  TerraformApply:
+    runs-on: ubuntu-latest
+    needs: TerraformPlan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Apply Terraform configuration
+        run: terraform apply -auto-approve terraform/
+        env:
+         TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}

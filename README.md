@@ -116,3 +116,66 @@ Make sure you have a .env file in the root of the project before running this st
   Start services in detached mode:
   ```bash
   docker compose up -d
+
+## Terraform and Kubernetes
+    This project uses Terraform to provision cloud infrastructure (VPC,EKS,RDS) and Kubernetes manifests to deploy the application. Please refer to the following folders for detailed instructions:
+
+    - `/terraform` → Contains Terraform modules and instructions to create VPC, EKS, RDS, and IAM   resources. See /terraform/README.md for setup details.
+
+    - `/k8s` → Contains Kubernetes manifests (Deployment, Service, Ingress, ConfigMap, Secrets) to deploy the app on EKS. See /k8s/README.md for setup details.
+
+## CI/CD Pipeline (GitHub Actions)
+    We have a GitHub Actions workflow to automate builds, image pushes to Docker Hub, and deployments to EKS.
+
+**Workflow Overview**
+ 
+   - Triggered on push to main.
+
+   - Detects changes in:
+        - app/** → rebuild Docker image and update deployment.
+
+        - k8s/** → reapply Kubernetes manifests.
+
+   - Steps:
+
+    1. Checkout repository.
+
+    2. Set up kubectl.
+
+    3. Authenticate to EKS cluster.
+
+    4. Detect changes in app and k8s folders.
+
+    5. Build and push Docker image to Docker Hub (using commit SHA as tag).
+
+    6. Apply Kubernetes manifests if k8s/** changed or deployment doesn’t exist.
+
+    7. Update deployment image if only app/** changed.
+
+**Important Notes**
+    For GitHub Actions, all secrets are stored in the repository settings, under Settings → Secrets → Actions.  
+
+    To add secrets:
+
+    1. Go to your repository on GitHub.
+
+    2. Click on Settings → Secrets → Actions.
+
+    3. Click New repository secret.
+
+    4. Enter the name and value for each secret.
+
+    5. Click Add secret.
+
+    - Once these are set, the GitHub Actions workflow will automatically use them during builds and deployments.
+
+    For this CI/CD workflow we require the following secrets to be configured in your GitHub repository:
+
+    | Secret Name             | Purpose                                                                            |
+    |-------------------------|----------------------------------------------------------------------------------|
+    | `DOCKER_USER`           | Your Docker Hub username                                                           |
+    | `DOCKER_PASS`           | Your Docker Hub password or access token                                           |
+    | `AWS_ACCESS_KEY_ID`     | AWS IAM user access key with permissions to manage EKS, RDS, and related resources |
+    | `AWS_SECRET_ACCESS_KEY` | AWS IAM user secret key                                                            |
+    | `AWS_REGION`            | AWS region where your EKS cluster is deployed                                      |
+    | `EKS_CLUSTER`           | Name of your EKS cluster                                                           |

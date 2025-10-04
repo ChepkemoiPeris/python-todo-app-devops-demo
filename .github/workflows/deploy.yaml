@@ -4,14 +4,61 @@ on:
    # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: ["main"]
+    paths:
+      - 'app/**'
+      - 'k8s/**'
+      - '!k8s/README.md' 
 
 jobs:     
   build-and-deploy:
   # The type of runner that the job will run on
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3 
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Test the pipeline
-        run: echo Hello, world!
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.31.2'
+
+      - name: Authenticate to cluster
+        run: |
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER }}
+        
+      - name: Check what changed
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app:
+              - 'app/**'
+            k8s:
+              - 'k8s/**'
+
+      - name: Build & Push Docker Image
+        if: steps.changes.outputs.app == 'true'
+        run: |
+            docker build -t ${{ secrets.DOCKER_USER }}/flask-app:${{ github.sha }} ./app
+            echo ${{ secrets.DOCKER_PASS }} | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+            docker push ${{ secrets.DOCKER_USER }}/flask-app:${{ github.sha }}
+
+      - name: Check if deployment exists
+        id: deploycheck
+        continue-on-error: true
+        run: |
+          if kubectl get deployment todo-app-deployment; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Apply all manifests
+        if: steps.changes.outputs.k8s == 'true' || steps.deploycheck.outputs.exists == 'false'
+        run: |
+          kubectl apply -f k8s/
+
+      - name: Update Deployment image
+        if: steps.changes.outputs.app == 'true' && steps.changes.outputs.k8s != 'true' && steps.deploycheck.outputs.exists == 'true'
+        run: |
+          kubectl set image deployment/todo-app-deployment todo-app-container=${{ secrets.DOCKER_USER }}/flask-app:${{ github.sha }}
