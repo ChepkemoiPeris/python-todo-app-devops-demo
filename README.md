@@ -116,7 +116,7 @@ Make sure you have a .env file in the root of the project before running this st
   Start services in detached mode:
   ```bash
   docker compose up -d
-
+  ```
 ## Terraform and Kubernetes
     This project uses Terraform to provision cloud infrastructure (VPC,EKS,RDS) and Kubernetes manifests to deploy the application. Please refer to the following folders for detailed instructions:
 
@@ -179,3 +179,15 @@ Make sure you have a .env file in the root of the project before running this st
     | `AWS_SECRET_ACCESS_KEY` | AWS IAM user secret key                                                            |
     | `AWS_REGION`            | AWS region where your EKS cluster is deployed                                      |
     | `EKS_CLUSTER_NAME`           | Name of your EKS cluster                                                           |
+
+### Accessing the Application on EKS
+Once the CI/CD pipeline has completed successfully, you can retrieve the public URL of the application using the Ingress resource created by the AWS Load Balancer Controller.
+1. Connect to your EKS cluster:
+    ```bash
+    aws eks --region <AWS_REGION> update-kubeconfig --name <EKS_CLUSTER_NAME>
+    ```
+2. Get the Ingress details:
+    ```bash
+    kubectl get ingress
+    ```
+    Copy the value under the ADDRESS column, Open the URL in your browser to access the To-Do app running on EKS
