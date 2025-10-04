@@ -14,6 +14,18 @@ module "alb_irsa" {
   }
 }
 
+# Service Account in EKS that uses the IAM Role above
+resource "kubernetes_service_account" "aws_load_balancer_controller" {
+  metadata {
+    name      = "aws-load-balancer-controller"
+    namespace = "kube-system"
+
+    annotations = {
+      "eks.amazonaws.com/role-arn" = module.alb_irsa.iam_role_arn
+    }
+  }
+}
+
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
