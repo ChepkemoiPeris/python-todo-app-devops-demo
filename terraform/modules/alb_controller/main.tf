@@ -20,26 +20,28 @@ resource "helm_release" "aws_load_balancer_controller" {
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
   version    = "1.8.1"  
-  timeout = 900
-  
-  set =[{
-    name  = "clusterName"
-    value = var.cluster_name
-  },
-  {
-    name  = "serviceAccount.create"
-    value = "true"
-  },
-  {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  },
-   {
-    name  = "region"
-    value = var.aws_region
-  },
-   {
-    name  = "vpcId"
-    value = var.vpc_id
-  }]
+  timeout    = 900
+
+  set = [
+    {
+      name  = "clusterName"
+      value = var.cluster_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = "false"
+    },
+    {
+      name  = "serviceAccount.name"
+      value = "aws-load-balancer-controller"
+    },
+    {
+      name  = "region"
+      value = var.aws_region
+    },
+    {
+      name  = "vpcId"
+      value = var.vpc_id
+    }
+  ]
 }
