@@ -4,6 +4,6 @@ metadata:
   name: db-configs
 data:
   db_name: "todo_db"
-  db_host: flask-todo-app.ccny2e8wc7r0.us-east-1.rds.amazonaws.com:3306
+  db_host: flask-todo-app.ccny2e8wc7r0.us-east-1.rds.amazonaws.com
 
  
