@@ -64,6 +64,7 @@ jobs:
         if: steps.changes.outputs.k8s == 'true' || steps.deploycheck.outputs.exists == 'false'
         run: |
           kubectl apply -f k8s/
+          kubectl set image deployment/todo-app-deployment todo-app-container=${{ secrets.DOCKER_USER }}/flask-app:${{ github.sha }}
 
       - name: Update Deployment image
         if: steps.changes.outputs.app == 'true' && steps.changes.outputs.k8s != 'true' && steps.deploycheck.outputs.exists == 'true'

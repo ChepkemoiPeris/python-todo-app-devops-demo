@@ -40,9 +40,20 @@ jobs:
         run: terraform -chdir=terraform init  
 
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan  
+        id: plan
+        run: terraform -chdir=terraform plan -no-color -input=false -detailed-exitcode
+        continue-on-error: true
         env:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+
+      - name: Handle Plan Exit Codes
+        run: |
+          if [ "${{ steps.plan.outcome }}" == "failure" ]; then
+            echo "Terraform failed with an error"
+            exit 1
+          else
+            echo "Terraform plan succeeded"
+          fi
 
       - name: Apply Terraform configuration
         run: terraform -chdir=terraform apply -auto-approve  
