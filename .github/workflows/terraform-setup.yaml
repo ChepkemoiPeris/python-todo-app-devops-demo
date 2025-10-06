@@ -71,13 +71,17 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
+          # Pull latest changes first
           git fetch origin main
-          git rebase origin/main || git rebase --skip
+          git pull --rebase origin main
 
+          # Add and commit config changes
           git add k8s/configmap.yaml
           git diff --staged --quiet || git commit -m "Update RDS endpoint in ConfigMap [skip ci]"
 
+          # Push safely after rebasing
           git push origin HEAD:main
+
 
 
       
