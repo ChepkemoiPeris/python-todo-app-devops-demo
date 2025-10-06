@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: todo-app-container
-        image: perischepkemoi/flask-todo-app:v1.0.2
+        image: perischepkemoi/flask-todo-app:v1.0.3
         resources:
           limits:
             memory: "128Mi"
