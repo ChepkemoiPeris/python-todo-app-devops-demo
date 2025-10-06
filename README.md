@@ -184,3 +184,7 @@ Once the CI/CD pipeline has completed successfully, you can retrieve the public 
     kubectl get ingress
     ```
     Copy the value under the ADDRESS column, Open the URL in your browser to access the To-Do app running on EKS
+
+## Challenges faced for this sre:
+
+Initially, the GitHub Actions workflow triggered redundantly on every commit. Fixed this by adding conditional checks using GitHub path filters so it only runs when relevant folders (app/, k8s/, terraform/) change.

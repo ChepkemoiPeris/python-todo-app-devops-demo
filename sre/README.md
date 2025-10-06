@@ -54,7 +54,7 @@
       You should see pods like: - prometheus-prometheus-kube-prometheus-prometheus-0 and others.Wait until all pods show Running state.
 
 3. Configure Prometheus to Monitor Your Flask App
-    - Create a ServiceMonitor - Create a todo-servicemonitor.yaml file on k8s/ folder. You can copy code from my k8s/todo-servicemonitor.yaml. Make sure your match labels matches your service app: labels, if you don't have it update service.yaml - metadata: labels: app: todo-app
+    - Create a ServiceMonitor - Create a todo-servicemonitor.yaml file on k8s/monitoring folder. You can copy code from my k8s/monitoring/todo-servicemonitor.yaml. Make sure your match labels matches your service app: labels, if you don't have it update service.yaml - metadata: labels: app: todo-app
     - Apply the configurations
       ```bash
       # Apply the ServiceMonitor
@@ -71,7 +71,7 @@
       Open browser to http://localhost:9090/targets and look for your todo-app target. It should show as "UP".
 
 4. Configure Alerts
-   - Create alert rules file - Create a file called todo-alerts.yaml on k8s/ folder and get code from my k8s/todo-alerts.yaml
+   - Create alert rules file - Create a file called todo-alerts.yaml on k8s/monitoring folder and get code from my k8s/monitoring/todo-alerts.yaml
    - Apply alert rules: 
       ```bash
       kubectl apply -f todo-alerts.yaml
@@ -105,7 +105,7 @@
      kubectl get secret prometheus-grafana -n monitoring -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
      ``` 
       - Username: admin
-      - Password: {passwordfromcommandabove}
+      - Password: {passwordfromcommand} #we set admin123 you can use this but confirm from command above
 
    - Add Prometheus data source
       - Click on (Settings) -> Data Sources
@@ -142,12 +142,12 @@
          
       - Panel 6: Pod CPU Usage
          - Visualization: Time series
-         - Query: sum(rate(container_cpu_usage_seconds_total{pod=~"flask-app-.*"}[5m])) by (pod)
+         - Query: sum(rate(container_cpu_usage_seconds_total{pod=~"todo-app-.*"}[5m])) by (pod)
          - Title: "CPU Usage by Pod"
 
       - Panel 7: Pod Memory Usage
          - Visualization: Time series
-         - Query: sum(container_memory_usage_bytes{pod=~"flask-app-.*"}) by (pod)
+         - Query: sum(container_memory_usage_bytes{pod=~"todo-app-.*"}) by (pod)
          - Title: "Memory Usage by Pod"
       Save dashboard after every entry.
 
@@ -163,7 +163,7 @@
       - Choose a channel (or creat a new one #alerts)
       - Copy the webhook URL (looks like: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXX)
 
-    - Create alertmanager-config.yaml on k8s/ folder and get code from this repo k8s/alertmanager-config.yaml and replace api_url with your value.
+    - Create alertmanager-config.yaml on k8s/monitoring folder and get code from this repo k8s/monitoring/alertmanager-config.yaml and replace api_url with your value.
 
     - Apply and Test
       ```bash
@@ -174,12 +174,12 @@
       kubectl rollout restart statefulset/alertmanager-prometheus-kube-prometheus-alertmanager -n monitoring
 
       # Test - trigger an alert
-      kubectl scale deployment/flask-app --replicas=0
+      kubectl scale deployment/todo-app-deployment --replicas=0
 
       # Wait 2 minutes, check Slack!
 
       # Scale back
-      kubectl scale deployment/flask-app --replicas=2
+      kubectl scale deployment/todo-app-deployment --replicas=2
       ```
    Email can be added via SMTP or AWS SES as a future improvement for production environments.
 
@@ -193,12 +193,12 @@
       ```
    - Test alerts: Simulate app down
       ```bash
-      kubectl scale deployment/flask-app --replicas=0
+      kubectl scale deployment/todo-app-deployment --replicas=0
       ```
-      Check if you received alerts or check on http://your-url:9090/alerts
+      Check if you received alerts 
    - Restore the app
       ```bash
-      kubectl scale deployment/flask-app --replicas=2
+      kubectl scale deployment/todo-app-deployment --replicas=2
       ```
    - Test alert: Simulate database failure
       change the host name or db_name to nonexistent, and recheck then restore the database connection
@@ -206,3 +206,26 @@
 ## Notes
    - Incident response procedures are on INCIDENT_RESPONSE.md
    - You can improve this by setting notifications to use SES or SNS
+
+## Challenges faced:
+ -  Grafana and prometheus initially couldn’t reach app due to namespace not specified and service networking issues(missing labels on app service) in EKS. Fixed by adjusting service names and labels and ensuring we specify namespace on service.yaml.
+
+ -  Setting up alert notifications was tricky because email (SMTP) required extra configuration. Eventually integrated Slack alerts through Alertmanager instead — in the future, Amazon SNS or SES could be used for better scalability.
+
+## Screenshots from Grafana
+
+**Todo Application Status Panel**
+
+![Todo Application Status](./applicationstatuspanel.png)
+
+**Alert Firing Example**
+
+![Alert Firing](./alertfiring.png)
+
+**Alert Rules**
+
+![Alert Rules](./alertrules.png)
+
+**Grafana Dashboard Overview**
+
+![Grafana Dashboard](./grafanadash.png)

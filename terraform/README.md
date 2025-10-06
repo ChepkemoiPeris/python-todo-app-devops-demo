@@ -107,3 +107,12 @@ To enable the workflow, add the following repository secrets under Settings → 
 | `DB_PASSWORD`           | DB password for rds                                          |
 
 Once these are set, pushing changes to the `terraform/` folder (excluding README.md) will automatically trigger the workflow.
+
+## Challenges faced: 
+  - Encountered dependency destruction issues during terraform apply and terraform destroy due to interlinked AWS resources (like subnets and NAT gateways) or when using VPC outputs for RDS and EKS. Fixed by adding appropriate depends_on blocks and improving destroy ordering. If you face similar issue you can also delete load balancers from console/UI directly
+  - Faced challenges with secrets management — currently using exported environment variables and passing them to secrets.yaml for Kubernetes. This could be improved by integrating AWS Secrets Manager in future versions.
+  - Ran into a Terraform state lock issue when running terraform commands - if you face this issue just ran: 
+      ```bash
+      terraform force-unlock <LOCK_ID>
+      ```
+  - (Note: EKS can be quite expensive to run since it’s not covered under AWS Free Tier!) 
