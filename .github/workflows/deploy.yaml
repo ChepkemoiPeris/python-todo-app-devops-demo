@@ -6,7 +6,7 @@ on:
     branches: ["main"]
     paths:
       - 'app/**'
-      - 'k8s/**'
+      - 'k8s/app/**'
       - '!k8s/README.md'
   workflow_dispatch:
 
@@ -63,7 +63,7 @@ jobs:
       - name: Apply all manifests
         if: steps.changes.outputs.k8s == 'true' || steps.deploycheck.outputs.exists == 'false'
         run: |
-          kubectl apply -f k8s/
+          kubectl apply -f k8s/app
           kubectl set image deployment/todo-app-deployment todo-app-container=${{ secrets.DOCKER_USER }}/flask-app:${{ github.sha }}
 
       - name: Update Deployment image
