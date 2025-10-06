@@ -112,42 +112,43 @@
       - Prometheus should already be configured
       - Test the connection
    - Create a new dashboard
-      Click + -> Dashboard -> Add new panel/visualization
-         - Panel 1: Todo Application Status
-            - Visualization: Stat
-            - Query: up{job="todo-app-svc"}
-            - Title: "Todo Application Status"
+      Click + -> Dashboard -> Add new panel/visualization:
 
-         - Panel 2: Todo Request Rate
-            - Visualization: Time series
-            - Query: sum(rate(flask_http_request_total[5m])) by (status)
-            - Title: "Request Rate by Status Code"
+      - Panel 1: Todo Application Status
+         - Visualization: Stat
+         - Query: up{job="todo-app-svc"}
+         - Title: "Todo Application Status"
 
-         - Panel 3: Todo Response Time
-            - Visualization: Time series
-            - Query: histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le))
-            - Title: "95th Percentile Response Time"
+      - Panel 2: Todo Request Rate
+         - Visualization: Time series
+         - Query: sum(rate(flask_http_request_total[5m])) by (status)
+         - Title: "Request Rate by Status Code"
 
-         - Panel 4: Todo Error Rate
-            - Visualization: Stat
-            - Query: (sum(rate(flask_http_request_total{status=~"5.."}[5m])) / sum(rate(flask_http_request_total[5m]))) * 100
-            - Title: "Error Rate %"
-            - Thresholds: Green < 1%, Yellow < 5%, Red >= 5%
+      - Panel 3: Todo Response Time
+         - Visualization: Time series
+         - Query: histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[5m])) by (le))
+         - Title: "95th Percentile Response Time"
 
-         - Panel 5: Todo Database Health
-            - Visualization: Stat
-            - Query: db_connection_health
-            - Title: "Database Connection Status"
-            
-         - Panel 6: Pod CPU Usage
-            - Visualization: Time series
-            - Query: sum(rate(container_cpu_usage_seconds_total{pod=~"flask-app-.*"}[5m])) by (pod)
-            - Title: "CPU Usage by Pod"
+      - Panel 4: Todo Error Rate
+         - Visualization: Stat
+         - Query: (sum(rate(flask_http_request_total{status=~"5.."}[5m])) / sum(rate(flask_http_request_total[5m]))) * 100
+         - Title: "Error Rate %"
+         - Thresholds: Green < 1%, Yellow < 5%, Red >= 5%
 
-         - Panel 7: Pod Memory Usage
-            - Visualization: Time series
-            - Query: sum(container_memory_usage_bytes{pod=~"flask-app-.*"}) by (pod)
-            - Title: "Memory Usage by Pod"
+      - Panel 5: Todo Database Health
+         - Visualization: Stat
+         - Query: db_connection_health
+         - Title: "Database Connection Status"
+         
+      - Panel 6: Pod CPU Usage
+         - Visualization: Time series
+         - Query: sum(rate(container_cpu_usage_seconds_total{pod=~"flask-app-.*"}[5m])) by (pod)
+         - Title: "CPU Usage by Pod"
+
+      - Panel 7: Pod Memory Usage
+         - Visualization: Time series
+         - Query: sum(container_memory_usage_bytes{pod=~"flask-app-.*"}) by (pod)
+         - Title: "Memory Usage by Pod"
       Save dashboard after every entry.
 
 6. Configure Alertmanager Notifications(Optional)
@@ -162,7 +163,7 @@
       - Choose a channel (or creat a new one #alerts)
       - Copy the webhook URL (looks like: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXX)
 
-    - Create alertmanager-config.yaml on k8s/ folder and get code from this repo k8s/alertmanager-config.yaml and replace WEBHOOK_URL_HERE with your value or setup SLACK_WEBHOOK on github secrets and will be picked by cicd pipeline
+    - Create alertmanager-config.yaml on k8s/ folder and get code from this repo k8s/alertmanager-config.yaml and replace api_url with your value.
 
     - Apply and Test
       ```bash

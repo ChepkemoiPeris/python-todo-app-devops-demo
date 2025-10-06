@@ -18,7 +18,7 @@ stringData:
     receivers:
     - name: 'slack'
       slack_configs:
-      - api_url:  WEBHOOK_URL_HERE
+      - api_url: '{{ .Secrets.slack_api_url }}'
         channel: '#peris-devops-practice'
         title: '{{ .GroupLabels.alertname }}'
         text: |
