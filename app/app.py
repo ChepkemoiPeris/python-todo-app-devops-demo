@@ -2,11 +2,15 @@ from flask import Flask, render_template, request, redirect,jsonify
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from prometheus_flask_exporter import PrometheusMetrics
+
 
 load_dotenv()
 
-app = Flask(__name__)
 
+app = Flask(__name__)
+# Initialize prometheus metrics
+metrics = PrometheusMetrics(app)
 # Configure MySQL Database Connection
   
 def get_db_connection():
