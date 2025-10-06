@@ -42,12 +42,15 @@
 **Response Time:** Immediate
 
 ### Steps:
-1. Check RDS instance if available via console or aws cli 
+1. Check if the RDS instance is available via AWS Console or CLI:
+   ```bash
+   aws rds describe-db-instances --db-instance-identifier <your-db-instance>
+   ```
 
 2. Check todo-app pods logs:
-  ```bash
-    kubectl get pods -l app=todo-app
-    ```
+   ```bash
+   kubectl get pods -l app=todo-app
+   ```
 
 3. Verify secrets are correct:
     ```bash
