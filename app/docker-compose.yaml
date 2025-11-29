@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
   web:
     build:
-      context: ./app
+      context: .
     environment:
       MYSQL_HOST: db
       MYSQL_USER: todo_user
